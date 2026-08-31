@@ -53,16 +53,26 @@ st.markdown("""
         margin-bottom: 2rem;
     }
     
-    /* Premium Glassmorphic Cards */
+    /* Premium Glassmorphic Cards styling */
     .glass-card {
-        background: rgba(31, 38, 135, 0.05);
-        backdrop-filter: blur(10px);
-        -webkit-backdrop-filter: blur(10px);
+        background: rgba(255, 255, 255, 0.03);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
         border: 1px solid rgba(255, 255, 255, 0.08);
         border-radius: 12px;
         padding: 1.5rem;
         margin-bottom: 1rem;
         box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+    }
+    
+    .glass-card h1, .glass-card h2, .glass-card h3, .glass-card h4, .glass-card h5, .glass-card h6 {
+        color: #ffffff !important;
+        font-family: 'Space Grotesk', sans-serif;
+        font-weight: 600;
+    }
+    
+    .glass-card p, .glass-card span {
+        color: #c5c6c7;
     }
     
     .status-active {
@@ -112,6 +122,21 @@ st.markdown("""
         border: 2px solid #ff3366;
         color: #ffffff;
         box-shadow: 0 0 15px rgba(255, 51, 102, 0.5);
+    }
+
+    /* Style Streamlit Metrics */
+    [data-testid="stMetricLabel"] {
+        color: #8b9bb4 !important;
+        font-size: 0.95rem !important;
+        font-weight: 600 !important;
+    }
+    [data-testid="stMetricValue"] {
+        color: #ffffff !important;
+        font-family: 'Space Grotesk', sans-serif;
+        font-weight: 700 !important;
+    }
+    [data-testid="stMetricDelta"] {
+        font-weight: 600 !important;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -320,8 +345,9 @@ def make_gauge_chart(value, title, color):
         }
     ))
     fig.update_layout(
-        height=130,
-        margin=dict(l=15, r=15, t=10, b=10),
+        template="plotly_dark",
+        height=120,
+        margin=dict(l=15, r=15, t=5, b=5),
         paper_bgcolor='rgba(0,0,0,0)',
         plot_bgcolor='rgba(0,0,0,0)'
     )
@@ -447,7 +473,14 @@ if view_mode == "Floor Operations Console (Real-time Diagnostics)":
         })
         fig = px.bar(conf_df, x="Probability", y="Class", orientation='h', color="Probability",
                      color_continuous_scale="Viridis", height=200)
-        fig.update_layout(showlegend=False, margin=dict(l=10, r=10, t=10, b=10), paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)', font_color="#c5c6c7")
+        fig.update_layout(
+            template="plotly_dark",
+            showlegend=False, 
+            margin=dict(l=10, r=10, t=10, b=10), 
+            paper_bgcolor='rgba(0,0,0,0)', 
+            plot_bgcolor='rgba(0,0,0,0)', 
+            font_color="#c5c6c7"
+        )
         st.plotly_chart(fig, use_container_width=True)
         st.markdown("</div>", unsafe_allow_html=True)
         
@@ -478,6 +511,7 @@ if view_mode == "Floor Operations Console (Real-time Diagnostics)":
         fig.add_trace(go.Scatter(x=df_hist["Index"], y=df_hist["Q_VFD3_Temperature"], name="VFD 3 (Observed)", line=dict(color="#66fcf1", width=1.5)))
         
         fig.update_layout(
+            template="plotly_dark",
             title="VFD Temperature Profile History (Last 50 Samples)",
             height=250,
             paper_bgcolor='rgba(0,0,0,0)',
@@ -521,12 +555,25 @@ if view_mode == "Floor Operations Console (Real-time Diagnostics)":
             velocity = current_row[f"M_{r}_SJoint_Velocity"]
             acceleration = current_row[f"M_{r}_SJoint_Acceleration"]
             
-            st.write("S-Joint Motion Kinematics:")
-            kin_df = pd.DataFrame({
-                "Metric": ["Angle (°)", "Velocity (°/s)", "Accel (°/s²)"],
-                "Value": [angle, velocity, acceleration]
-            })
-            st.dataframe(kin_df, hide_index=True)
+            st.markdown(f"""
+            <div style='margin-top: 10px;'>
+                <p style='margin: 0 0 5px 0; font-size: 0.85rem; color: #8b9bb4; font-weight: bold;'>S-Joint Motion Kinematics</p>
+                <table style='width: 100%; border-collapse: collapse; font-size: 0.85rem;'>
+                    <tr style='border-bottom: 1px solid rgba(255,255,255,0.1);'>
+                        <td style='padding: 4px 0; color: #c5c6c7;'>Angle</td>
+                        <td style='padding: 4px 0; text-align: right; color: #66fcf1; font-weight: bold;'>{angle:.2f}°</td>
+                    </tr>
+                    <tr style='border-bottom: 1px solid rgba(255,255,255,0.1);'>
+                        <td style='padding: 4px 0; color: #c5c6c7;'>Velocity</td>
+                        <td style='padding: 4px 0; text-align: right; color: #66fcf1; font-weight: bold;'>{velocity:.2f}°/s</td>
+                    </tr>
+                    <tr>
+                        <td style='padding: 4px 0; color: #c5c6c7;'>Acceleration</td>
+                        <td style='padding: 4px 0; text-align: right; color: #66fcf1; font-weight: bold;'>{acceleration:.2f}°/s²</td>
+                    </tr>
+                </table>
+            </div>
+            """, unsafe_allow_html=True)
             st.markdown("</div>", unsafe_allow_html=True)
 
 # ----------------------------------------------------------------------------------------------------------------------
@@ -585,13 +632,17 @@ else:
     st.subheader("Overall Equipment Effectiveness (OEE) Real-time Dials")
     oee_cols = st.columns(4)
     with oee_cols[0]:
-        st.plotly_chart(make_gauge_chart(oee, "OEE Score", "#66fcf1"), use_container_width=True)
+        st.markdown("<p style='text-align:center; color:#66fcf1; margin-bottom:-20px; font-weight:600; font-family:\"Space Grotesk\",sans-serif;'>OEE Score</p>", unsafe_allow_html=True)
+        st.plotly_chart(make_gauge_chart(oee, "", "#66fcf1"), use_container_width=True)
     with oee_cols[1]:
-        st.plotly_chart(make_gauge_chart(availability, "Availability", "#00ffcc"), use_container_width=True)
+        st.markdown("<p style='text-align:center; color:#00ffcc; margin-bottom:-20px; font-weight:600; font-family:\"Space Grotesk\",sans-serif;'>Availability</p>", unsafe_allow_html=True)
+        st.plotly_chart(make_gauge_chart(availability, "", "#00ffcc"), use_container_width=True)
     with oee_cols[2]:
-        st.plotly_chart(make_gauge_chart(performance, "Performance", "#ffcc00"), use_container_width=True)
+        st.markdown("<p style='text-align:center; color:#ffcc00; margin-bottom:-20px; font-weight:600; font-family:\"Space Grotesk\",sans-serif;'>Performance</p>", unsafe_allow_html=True)
+        st.plotly_chart(make_gauge_chart(performance, "", "#ffcc00"), use_container_width=True)
     with oee_cols[3]:
-        st.plotly_chart(make_gauge_chart(quality, "Quality (FPY)", "#ff3366"), use_container_width=True)
+        st.markdown("<p style='text-align:center; color:#ff3366; margin-bottom:-20px; font-weight:600; font-family:\"Space Grotesk\",sans-serif;'>Quality (FPY)</p>", unsafe_allow_html=True)
+        st.plotly_chart(make_gauge_chart(quality, "", "#ff3366"), use_container_width=True)
 
     # Section 1: Bottleneck Forecasting (LSTM Lookahead)
     st.subheader("Station 2 (Dark Station) Bottleneck Forecasting & Analysis")
@@ -623,6 +674,7 @@ else:
         fig.add_shape(type="line", x0=-hist_len+1, y0=15.5, x1=forecast_cycles, y1=15.5, line=dict(color="red", width=1, dash="dash"))
         
         fig.update_layout(
+            template="plotly_dark",
             title="Dark Station Cycle Time Forecast (LSTM Multi-step Lookahead)",
             xaxis_title="Relative Cycles (0 = Current)",
             yaxis_title="Transit Time (seconds)",
@@ -663,6 +715,7 @@ else:
                 height=160
             )
             fig_dt.update_layout(
+                template="plotly_dark",
                 showlegend=True,
                 legend=dict(orientation="h", yanchor="bottom", y=-0.5, xanchor="center", x=0.5),
                 margin=dict(l=5, r=5, t=5, b=5),
@@ -738,12 +791,19 @@ else:
         
         # Pie chart of carbon savings sources
         fig = px.pie(
-            names=["VFD Dynamic Controls", "Avoided Embodied Material Scrap"],
+            names=["VFD Savings", "Material Scrap Saved"],
             values=[max(0.001, carbon_saved_vfd), max(0.001, prevented_wasted_body_kg_co2)],
             color_discrete_sequence=["#66fcf1", "#45a29e"],
             hole=0.4,
             height=180
         )
-        fig.update_layout(showlegend=False, margin=dict(l=10, r=10, t=10, b=10), paper_bgcolor='rgba(0,0,0,0)', font_color="#c5c6c7")
+        fig.update_layout(
+            template="plotly_dark",
+            showlegend=True,
+            legend=dict(orientation="h", yanchor="bottom", y=-0.5, xanchor="center", x=0.5),
+            margin=dict(l=10, r=10, t=10, b=10),
+            paper_bgcolor='rgba(0,0,0,0)',
+            font_color="#c5c6c7"
+        )
         st.plotly_chart(fig, use_container_width=True)
         st.markdown("</div>", unsafe_allow_html=True)
