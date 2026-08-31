@@ -90,6 +90,16 @@ Our dashboard isn't just about pretty charts; it helps supervisors make real-tim
 
 ---
 
+## 🎨 Design & Custom Theming
+
+To deliver a premium, user-friendly experience that avoids visual inconsistency across different browser/OS color schemes:
+- **Unified Dark Theme**: Enforced globally using a custom [.streamlit/config.toml](.streamlit/config.toml), unifying the sidebar background (`#1f2833`) and main console (`#0b0c10`) under a premium dark layout.
+- **High-Contrast Metrics & Text**: Extended custom CSS styles explicitly target metric cards, text labels, and headings to prevent low contrast.
+- **Plotly Dark Templates**: Applied `template="plotly_dark"` and visible legends to all dynamic Plotly charts (OEE dials, LSTM cycle forecast, downtime analysis, and ESG offset breakdown) to guarantee clear legends, titles, and axis ticks.
+- **Custom HTML Tables**: Refactored robot kinematics into styled CSS tables to replace heavy default tables with a cohesive premium layout.
+
+---
+
 ## 🚀 How to Run the Project
 
 ### Setup
