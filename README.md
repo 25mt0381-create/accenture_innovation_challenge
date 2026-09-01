@@ -1,7 +1,7 @@
 # PredictivePulse ⚡
 ### Real-Time Operations Digital Twin & Fault Diagnostics for Assembly Lines
 
-Hey there! 👋 This is our team's project (**PredictivePulse**) developed for the **Accenture Innovation Challenge 2026 (Problem Track 4: DigitalTwin.ai)** by Rahul & Team from IIT ISM Dhanbad.
+Hey there! 👋 This  project (**PredictivePulse**) is developed for the **Accenture Innovation Challenge 2026 (Problem Track 4: DigitalTwin.ai)** by Rahul Sarkar.
 
 We built an operations digital twin for a vehicle manufacturing assembly line. It monitors live SCADA streams, predicts chassis assembly defects in real-time with machine learning, detects hidden bottlenecks, and tracks live ESG energy and carbon savings—all inside an interactive, dark-mode Streamlit operations console.
 
@@ -170,5 +170,5 @@ Open your browser and navigate to `http://localhost:8501`.
 ---
 
 ## 👥 Team
-- **Rahul & Team** — Indian Institute of Technology (ISM) Dhanbad
+- **Rahul Sarkar — Indian Institute of Technology (ISM) Dhanbad
 - **Challenge**: Accenture Innovation Challenge 2026 (Problem Track 4: DigitalTwin.ai)
